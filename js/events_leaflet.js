@@ -1,8 +1,7 @@
-var query = `SELECT * FROM "12cb3883-56f5-47de-afa5-3b1cf61b257b" WHERE "YEAR" = '2018'
-AND CAST("MONTH" AS INT) = 12`;
+var query = `SELECT * FROM "12cb3883-56f5-47de-afa5-3b1cf61b257b" WHERE YEAR = '2019'`;
 
 var showingCrimes = false;
-var parkingLayer = null;
+var parkingLayer = true;
 
 var crimesCluster = L.markerClusterGroup({
   // iconCreateFunction is used if we are not using MarkerCluster.Default.css
@@ -38,10 +37,12 @@ function loadCrimesLayer() {
 
     // iterate over all data points
     for (var i = 0; i < dataLength; i++) {
-      latList.push(Number(jsonArray[i].Lat));
-      lonList.push(Number(jsonArray[i].Long));
+      latList.push(Number(jsonArray[i].lat));
+      lonList.push(Number(jsonArray[i].long));
       incidentList.push(jsonArray[i].OFFENSE_CODE_GROUP);
     }
+
+    console.log(latList)
 
     // Add markers to cluster group
     var crimesMarkerList = [];
@@ -75,6 +76,7 @@ function loadParkingLayer() {
       })
       .bindPopup(function(layer) {
         //return layer.feature.properties.Address;
+        console.log(layer.feature.properties)
         return `Name: ${layer.feature.properties.Name}<br>
         Phone: ${layer.feature.properties.Phone}<br>
         Spaces: ${layer.feature.properties.Spaces}<br>
@@ -82,6 +84,7 @@ function loadParkingLayer() {
         Comments: ${layer.feature.properties.Comments}`;
       });
     }
+    //console.log(latList)
   };
 
   request.open('GET', 'datasets/Snow_Emergency_Parking.geojson');
