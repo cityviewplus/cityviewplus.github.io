@@ -15,6 +15,10 @@ body {
   z-index: 1;
 }
 
+#logo {
+  vertical-align: middle;
+}
+
 .section {
   background-color: #e5e5e5;
 }
