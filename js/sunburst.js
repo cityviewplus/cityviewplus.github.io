@@ -4,6 +4,7 @@ getData(query, function(jsonArray) {
 
   var height = 770;
   var width = 770;
+  var svg2Width = 550;
   var radius = width / 8;
   var pMargin = 30
 
@@ -92,7 +93,7 @@ getData(query, function(jsonArray) {
       .style("font", "10px sans-serif");
 
     var svg2 = d3.select("#barChart").append("svg")
-      .attr("width", width)
+      .attr("width", svg2Width)
       .attr("height", "100%")
       //.attr("style", "margin-left:auto; margin-right:auto; display:block;")
       .attr("style", "margin-left:auto; float:right; display:block;")
