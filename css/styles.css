@@ -16,7 +16,10 @@ body {
 }
 
 #logo {
-  vertical-align: middle;
+  height: 55%;
+  width: 30%;
+  margin-top: 4%;
+  margin-left: 2%;
 }
 
 .section {
@@ -26,7 +29,6 @@ body {
 .hero.is-light {
   background-color: #e5e5e5;
 }
-
 
 header {
   position: relative;
@@ -79,12 +81,14 @@ header {
 
 #chart {
   display: inline-block;
+  height: 100%;
 }
 
 #barChart {
   padding-top: 70px;
   padding-left: 30px;
   display: inline-block;
+  height: 100%;
 }
 
 .bar {

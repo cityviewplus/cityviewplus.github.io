@@ -1,9 +1,10 @@
 var query = `SELECT * FROM "20f64c02-6023-4280-8131-e8c0cedcae9b"`;
 
-getData(query, function(jsonArray) {
+d3.csv("datasets/race-and-or-ethnicity.csv", function(jsonArray) {
+  console.log(jsonArray);
 
-  var height = 770;
-  var width = 770;
+  var height = 670;
+  var width = 670;
   var svg2Width = 550;
   var radius = width / 8;
   var pMargin = 30
