@@ -3,11 +3,13 @@ var query = `SELECT * FROM "12cb3883-56f5-47de-afa5-3b1cf61b257b" WHERE YEAR = '
 var showingCrimes = false;
 var parkingLayer = true;
 
+var parkingIcon = L.icon({
+  iconUrl: 'images/parking-icon.png',
+
+  iconSize: [30, 30], // size of the icon
+});
+
 var crimesCluster = L.markerClusterGroup({
-  // iconCreateFunction is used if we are not using MarkerCluster.Default.css
-  // iconCreateFunction: function(cluster) {
-  //   return L.divIcon({ html: '<div><span>' + cluster.getChildCount() + '</div></span>', className: 'marker-cluster streetlight-cluster', iconSize: L.point(40, 40) });
-  // },
   chunkedLoading: true,
   spiderfyOnMaxZoom: false, // disable spiderfy
   disableClusteringAtZoom: 18, // at this zoom level and below, markers will not be clustered
@@ -29,28 +31,33 @@ loadCrimesLayer();
 loadParkingLayer();
 
 function loadCrimesLayer() {
-  getData(query, function(jsonArray) {
+  d3.csv("datasets/filtered-crimes.csv", function(jsonArray) {
     var dataLength = jsonArray.length;
     var latList = [];
     var lonList = [];
     var incidentList = [];
+    var dateList = [];
 
     // iterate over all data points
     for (var i = 0; i < dataLength; i++) {
-      latList.push(Number(jsonArray[i].lat));
-      lonList.push(Number(jsonArray[i].long));
-      incidentList.push(jsonArray[i].OFFENSE_CODE_GROUP);
+      latList.push(Number(jsonArray[i].Lat));
+      lonList.push(Number(jsonArray[i].Long));
+      incidentList.push(jsonArray[i].OFFENSE_DESCRIPTION);
+      dateList.push(jsonArray[i].OCCURRED_ON_DATE);
     }
-
-    console.log(latList)
 
     // Add markers to cluster group
     var crimesMarkerList = [];
     for (var i = 0; i < dataLength; i++) {
+      var incident = incidentList[i];
+      var date = dateList[i];
       var marker = L.circleMarker(getLatLon(i, latList, lonList), {
         radius: 5,
         color: 'red'
-      }).bindPopup(incidentList[i]);
+      }).bindPopup(function() {
+        return `Offense description: ${incident}<br>
+        Date: ${date}`;
+      });
       crimesMarkerList.push(marker);
     }
 
@@ -68,21 +75,19 @@ function loadParkingLayer() {
       console.log(geoJsonData);
 
       parkingLayer = L.geoJSON(geoJsonData, {
-        pointToLayer: function(point, latlng) {
-          return L.circleMarker(latlng, {
-            radius: 5
-          });
-        }
-      })
-      .bindPopup(function(layer) {
-        //return layer.feature.properties.Address;
-        console.log(layer.feature.properties)
-        return `Name: ${layer.feature.properties.Name}<br>
+          pointToLayer: function(point, latlng) {
+            return L.marker(latlng, {
+              icon: parkingIcon
+            });
+          }
+        })
+        .bindPopup(function(layer) {
+          return `Name: ${layer.feature.properties.Name}<br>
         Phone: ${layer.feature.properties.Phone}<br>
         Spaces: ${layer.feature.properties.Spaces}<br>
         Fee: ${layer.feature.properties.Fee}<br>
         Comments: ${layer.feature.properties.Comments}`;
-      });
+        });
     }
     //console.log(latList)
   };

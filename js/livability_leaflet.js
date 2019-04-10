@@ -17,14 +17,16 @@ var grayscaleMap = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}
 });
 
 var treesCluster = L.markerClusterGroup({
-  // iconCreateFunction is used if we are not using MarkerCluster.Default.css
-  // iconCreateFunction: function(cluster) {
-  //   return L.divIcon({ html: '<div><span>' + cluster.getChildCount() + '</div></span>', className: 'marker-cluster streetlight-cluster', iconSize: L.point(40, 40) });
-  // },
   chunkedLoading: true,
   spiderfyOnMaxZoom: false, // disable spiderfy
   disableClusteringAtZoom: 18, // at this zoom level and below, markers will not be clustered
   maxClusterRadius: 70 // < default (80) makes more, smaller clusters
+});
+
+var wifiIcon = L.icon({
+  iconUrl: 'images/wifi-icon.png',
+
+  iconSize: [30, 30], // size of the icon
 });
 
 var info = L.control();
@@ -49,8 +51,8 @@ function loadWifiLayer() {
 
       wifiLayer = L.geoJSON(geoJsonData, {
         pointToLayer: function(point, latlng) {
-          return L.circleMarker(latlng, {
-            radius: 1
+          return L.marker(latlng, {
+            icon: wifiIcon
           });
         }
       }).bindPopup(function(layer) {
@@ -67,34 +69,6 @@ function loadWifiLayer() {
 }
 
 function loadTreesLayer() {
-  // d3.csv("datasets/clustered_trees.csv", function(d) {
-  // console.time('loadTreesLayer');
-  // var dataLength = d.length;
-  // var latList = [];
-  // var lonList = [];
-  // var coordList = [];
-  // // iterate over all data points
-  // for (var i = 0; i < dataLength; i++) {
-  //   // latList.push(Number(d[i].Y));
-  //   // lonList.push(Number(d[i].X));
-  //
-  //   var array = [];
-  //
-  //   array.push(Number(d[i].lat)); //Y
-  //   array.push(Number(d[i].lon)); //X
-  //   array.push(0.2);
-  //
-  //   coordList.push(array)
-  // }
-  //
-  // treesHeat = L.heatLayer(coordList, {
-  //   minOpacity: 0.5,
-  //   radius: 30,
-  //   gradient: { 0.2: '#edf8e9', 0.4: '#bae4b3', 0.6: '#74c476', 1: '#238b45' }
-  // });
-  // console.log(treesHeat);
-  //
-  // console.timeEnd('loadTreesLayer');
   d3.json("datasets/neighborhoods.geojson", function(d) {
     treesLayer = L.geoJson(d, { style: style, onEachFeature: onEachFeature });
   });
